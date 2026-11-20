@@ -10,22 +10,22 @@ Adapter que conecta a metodologia **EGM (Elephant-Goldfish Model)** do Google ao
 
 ```
 ┌─ Pane 1 (primário) ──────────────────────────────────────────┐
-│ ELEPHANT: opencode --agent egm                               │
+│ ELEPHANT: opencode, agente egm (via /egm-* ou mini)           │
 │ - segue skills/egm-herdr/SKILL.md                            │
 │ - redige concepts_brief.md / design_draft.md                 │
-│ - despacha revisores via CLI herdr                           │
+│ - despacha revisores via CLI herdr e espera com agent wait   │
 │ - sintetiza relatórios e para nos approval gates             │
 └──────────────────────────────────────────────────────────────┘
        │ herdr pane split + agent start (1 por revisor)
-       ├─→ egm-comprehension       opencode + muse-spark-1.3-contributor
-       ├─→ egm-design-critic       opencode + glm-5.3
-       ├─→ egm-structural          agy      + gemini-3.8-flash
-       ├─→ egm-style               agy      + gemini-3.8-flash
-       ├─→ egm-zoom-out            opencode + glm-5.3
-       └─→ egm-implementation-readiness  opencode + glm-5.3
+       ├─→ egm-comprehension       mini + muse-spark-1.3-contributor
+       ├─→ egm-design-critic       mini + glm-5.3
+       ├─→ egm-structural          agy   + gemini-3.8-flash
+       ├─→ egm-style               agy   + gemini-3.8-flash
+       ├─→ egm-zoom-out            mini + glm-5.3
+       └─→ egm-implementation-readiness  mini + glm-5.3
 ```
 
-Cada revisor Goldfish é um **processo separado em um pane separado**, iniciado com um prompt autocontido (persona + alvo + standards). O isolamento de contexto é físico — mais forte que subagentes do mesmo host.
+Cada revisor Goldfish é um **processo separado em um pane separado** (`opencode mini --model X --agent egm-reviewer`, ou o TUI do agy), iniciado com um prompt autocontido (persona + alvo + standards). O isolamento de contexto é físico — mais forte que subagentes do mesmo host. O Elephant fica sabendo que terminaram via `herdr agent wait` (estado `done`/`idle`) e coleta o relatório **do arquivo em disco**, não da tela.
 
 ---
 
@@ -33,34 +33,26 @@ Cada revisor Goldfish é um **processo separado em um pane separado**, iniciado 
 
 ```bash
 cd ~/projects/egm-herdr
-
-# 1. Clona o upstream do EGM, registra hashes e integra sua config do opencode
-./scripts/install.sh
-
-# 2. Verificação offline
-./scripts/verify.sh
-
-# 3. Reinicie o opencode e abra uma sessão dentro do Herdr
+./scripts/install.sh     # clona o upstream do EGM, instala agents/commands/skill
+./scripts/verify.sh      # verificação offline (usa a config RESOLVIDA do opencode)
 ```
 
-O `install.sh`:
-1. Clona `google/elephant-goldfish-model` para `~/tools/elephant-goldfish-model` (fixando o commit de `EGM_COMMIT`, default `main`).
-2. Grava `~/.config/egm-herdr/paths.json` (caminhos absolutos) e `installation.json` (commit + SHA-256).
-3. Faz merge dos agentes `egm` e `egm-reviewer` e do path da skill na sua config global do opencode (`~/.config/opencode/opencode.json`), com backup `.bak` antes de alterar.
+O `install.sh` instala do jeito que este build do opencode realmente carrega — **arquivos file-based, sem tocar na sua `opencode.jsonc`**:
+
+- `~/.config/opencode/agents/egm.md`, `egm-reviewer.md`, `egm-implementer.md`
+- `~/.config/opencode/commands/egm-*.md` (5 comandos `/egm-*`)
+- `~/.config/opencode/skills/egm-herdr` → symlink para este repo
+- `~/.config/egm-herdr/paths.json` + `installation.json` (commit + SHA-256 do upstream)
+
+Backups `.bak.<timestamp>` são feitos se algum arquivo destino já existir. O upstream é validado por remote antes de qualquer update.
 
 ---
 
 ## Uso
 
-Dentro de um pane do Herdr, no diretório do projeto-alvo:
+Dentro de um pane do Herdr, no diretório do projeto-alvo (precisa reiniciar o opencode depois da instalação):
 
-```bash
-opencode --agent egm
-```
-
-Depois, no chat:
-
-| Objetivo | Mensagem |
+| Objetivo | Comando |
 |---|---|
 | Explorar a ideia | `/egm-brainstorm Adicionar webhook delivery a este projeto.` |
 | Rascunhar a spec | `/egm-draft` |
@@ -68,22 +60,19 @@ Depois, no chat:
 | Trabalhar os findings | `/egm-resolve design_draft.md` |
 | Conferir desvio docs vs código | `/egm-drift-report docs/designs/` |
 
+Ou iniciar o Elephant direto: `opencode mini --model opencode-go/glm-5.3 --agent egm`
+
 O que esperar:
 - O Elephant redige pausando por seção para o seu feedback.
-- No review, ele abre um pane por revisor (você vê cada Goldfish trabalhando).
-- Revisores escrevem findings em `egm-reports/<persona>.md` do projeto-alvo.
+- No review, ele abre um pane por revisor e **os despacha em paralelo**; cada estágio termina quando todos os revisores dele terminam.
+- Revisores escrevem findings em `egm-reports/reviewers/<relatório único>.md`; o Elephant escreve os relatórios canônicos de estágio no diretório do projeto.
 - Revisores que pedirem aprovação ficam `blocked` — você responde no pane deles.
-- O Elephant sintetiza os relatórios canônicos e **para antes de cada gate** para a sua decisão.
-- Aprovado: spec vai para `docs/designs/`. O implementador (pane dedicado, lê só a spec) roda por último.
+- O Elephant sintetiza e **para antes de cada gate** para a sua decisão.
+- Aprovado: spec vai para `docs/designs/`; o implementador (pane dedicado, `egm-implementer`) lê só a spec.
 
 ### Calibração (custo zero)
 
-Antes do primeiro run de verdade, valide o pipeline inteiro com `beam-free`:
-
-```bash
-# edite config/egm-herdr.json → substitua temporariamente os modelos
-# "opencode" por "opencode-go/beam-free" e rode /egm-review
-```
+Antes do primeiro run de verdade, valide o pipeline inteiro com `beam-free`: troque os modelos `opencode` da matriz em `config/egm-herdr.json` por `opencode-go/beam-free` e rode `/egm-review` num projeto descartável.
 
 ---
 
@@ -91,24 +80,22 @@ Antes do primeiro run de verdade, valide o pipeline inteiro com `beam-free`:
 
 | Papel | Modelo | Racional |
 |---|---|---|
-| Orquestrador (Elephant) | `glm-5.3` | Mais forte da conta; cap $500/mês folgado |
-| design-critic, zoom-out, implementation-readiness | `glm-5.3` | Julgamento profundo; rate próprio (6.600 req/5h) |
-| comprehension, codebase-details, inventive-catalyst | `muse-spark-1.3-contributor` | 45.300 req/5h, $0.10/$0.20 (SKU contributor: dados treinam Meta) |
+| Orquestrador (Elephant) e design-critic, zoom-out, implementation-readiness, implementador | `glm-5.3` | Cap $500/mês folgado, 6.600 req/5h, forte em coding |
+| comprehension, codebase-details, inventive-catalyst | `muse-spark-1.3-contributor` | 45.300 req/5h, SKU contributor $0.10/$0.20 (dados treinam Meta — consentido) |
 | structural, style (agy) | `gemini-3.8-flash` | Revisão leve no Antigravity |
-| Implementador (dev) | `glm-5.3` | "Matching models 3-4× its size" em coding |
-| Fallback de rate-limit | `mimo-v2.6-pro` | AA 46, #1 open-weight, cap $15 |
-| Calibração | `beam-free` | Open-weight (Reflection), ilimitado, $0 |
+| Fallback de rate-limit | `mimo-v2.6-pro` | AA 46, #1 open-weight, MIT |
+| Calibração | `beam-free` | Reflection Beam 1.0 (open-weight), ilimitado, $0 |
 
-Fontes: Artificial Analysis (índices por classe), kompozy.io (MiMo), stob.ai (Muse Spark), reflection.ai (Beam). Notas de AA não são comparáveis entre classes/faixas de preço.
+Rejeitados: `kimi-k3.1-pro` (147 req/5h), `minimax-m3` (AA 19), `longcat-2.0` (sem AA index). Fontes: Artificial Analysis (por classe), kompozy.io, stob.ai, reflection.ai.
 
 ---
 
 ## Verificação de isolamento (procedimento manual, recomendado)
 
-1. Coloque uma frase-marking secreta **apenas na conversa do Elephant** (nunca em arquivo).
+1. Coloque uma frase-marca secreta **apenas na conversa do Elephant** (nunca em arquivo).
 2. Rode `/egm-review` completo.
-3. Ao final, pergunte a cada revisor (via `herdr agent prompt`) qual era a frase secreta — nenhum deve saber.
-4. Peça a um revisor para gravar fora de `egm-reports/` — deve ser negado pelas permissões do agente.
+3. Pergunte a cada revisor qual era a frase (exceção documentada às regras da skill) — nenhum deve saber.
+4. Peça a um revisor para gravar fora de `egm-reports/reviewers/` — deve ser negado pelas permissões do agente `egm-reviewer`.
 
 ---
 
@@ -116,21 +103,23 @@ Fontes: Artificial Analysis (índices por classe), kompozy.io (MiMo), stob.ai (M
 
 ```
 egm-herdr/
-├── README.md
-├── opencode.json            # agentes egm + egm-reviewer (placeholders de path)
-├── skills/egm-herdr/SKILL.md # metodologia traduzida (o Elephant segue isso)
-├── config/egm-herdr.json    # matriz reviewer → {kind, model, persona_file}
-├── scripts/install.sh        # upstream + merge da config opencode
-├── scripts/verify.sh         # verificação offline
-└── docs/design.md           # decisões arquiteturais (estilo EGM/ADR)
+├── agents/                    # egm, egm-reviewer (read-only + report), egm-implementer
+├── commands/                   # /egm-brainstorm, /egm-draft, /egm-review, /egm-resolve, /egm-drift-report
+├── skills/egm-herdr/SKILL.md   # metodologia traduzida (o Elephant segue isso)
+├── config/egm-herdr.json       # matriz reviewer → {kind, model, persona_file, report único}
+├── scripts/install.sh          # upstream + instalação file-based
+├── scripts/verify.sh            # verificação offline (config RESOLVIDA via debug agents)
+└── docs/design.md              # decisões arquiteturais (estilo EGM/ADR)
 ```
 
 ## Limitações conhecidas
 
 - Revisores ainda carregam `AGENTS.md` do projeto ao iniciar (leak documentado também nos harnesses oficiais do EGM).
-- Read-only real existe no opencode (permissions do agente `egm-reviewer`); no agy, depende de flags — trate como prompt-only até validar.
-- `egm-bootstrap` não é orquestrado no v1 (para, não simula — igual ao adapter oficial).
-- Flags exatas de `--model` no `agent start` de cada kind devem ser confirmadas no primeiro run.
+- `herdr agent prompt` pode reportar `agent_prompt_stalled` como falso negativo no `opencode mini` — o prompt foi entregue mesmo assim; confirme lendo o pane (a SKILL cobre isso).
+- Primeiro `agent start --kind agy` num workspace mostra um diálogo de confiança que só você responde.
+- `egm-reviewer` nega `grep` de propósito (grep não respeita as read rules de `.env` — mesma decisão do adapter oficial do EGM); personas que varrem código usam `read`+`glob`.
+- `egm-bootstrap` não é orquestrado no v1 (para, não simula).
+- MCP tools do revisor não são negáveis em lote por nome de servidor — negadas por prompt; recursos MCP (`opencode_read_mcp_resource`) são negados por permissão.
 
 ## Licença
 

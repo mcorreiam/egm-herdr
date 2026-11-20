@@ -1,16 +1,11 @@
 {
-  "$comment": "EGM-Herdr reviewer matrix. kind: opencode|agy. model: as accepted by the kind's CLI. persona_file: canonical file under upstream agents/. report: filename the reviewer writes inside egm-reports/. Fallbacks are opt-in, never silent.",
-  "schema_version": 1,
+  "$comment": "EGM-Herdr reviewer matrix. kind: opencode|agy. model: passed to 'herdr agent start ... -- mini --model' (opencode) or the agy default (agy). persona_file: canonical file under upstream agents/. report: UNIQUE filename the reviewer writes inside egm-reports/reviewers/. The Elephant model is defined by the /egm-* commands (commands/*.md), not here.",
+  "schema_version": 2,
   "artifact_dir": "egm-reports",
   "upstream": {
     "repo": "https://github.com/google/elephant-goldfish-model",
     "persona_dir": "agents",
     "standards_dir": "resources/document_standards"
-  },
-  "orchestrator": {
-    "name": "egm-elephant",
-    "kind": "opencode",
-    "model": "opencode-go/glm-5.3"
   },
   "reviewers": {
     "egm-comprehension": {
@@ -23,19 +18,19 @@
       "kind": "opencode",
       "model": "opencode-go/glm-5.3",
       "persona_file": "design_critic.md",
-      "report": "critic_report.md"
+      "report": "design_critic_report.md"
     },
     "egm-structural": {
       "kind": "agy",
       "model": "gemini-3.8-flash",
       "persona_file": "structural.md",
-      "report": "critic_report.md"
+      "report": "structural_report.md"
     },
     "egm-style": {
       "kind": "agy",
       "model": "gemini-3.8-flash",
       "persona_file": "style.md",
-      "report": "critic_report.md"
+      "report": "style_report.md"
     },
     "egm-zoom-out": {
       "kind": "opencode",
@@ -87,10 +82,35 @@
     "egm-implementation-readiness"
   ],
   "review_stages": [
-    { "stage": 1, "name": "comprehension", "reviewers": ["egm-comprehension"] },
-    { "stage": 2, "name": "critic", "reviewers": ["egm-design-critic", "egm-structural", "egm-style"] },
-    { "stage": 3, "name": "zoom-out", "reviewers": ["egm-zoom-out"] },
-    { "stage": 4, "name": "implementation-readiness", "reviewers": ["egm-implementation-readiness"] },
-    { "stage": 5, "name": "consolidated", "reviewers": [] }
+    {
+      "stage": 1,
+      "name": "comprehension",
+      "reviewers": ["egm-comprehension"],
+      "elephant_report": "comprehension_report.md"
+    },
+    {
+      "stage": 2,
+      "name": "critic",
+      "reviewers": ["egm-design-critic", "egm-structural", "egm-style"],
+      "elephant_report": "critic_report.md"
+    },
+    {
+      "stage": 3,
+      "name": "zoom-out",
+      "reviewers": ["egm-zoom-out"],
+      "elephant_report": "zoom_out_report.md"
+    },
+    {
+      "stage": 4,
+      "name": "implementation-readiness",
+      "reviewers": ["egm-implementation-readiness"],
+      "elephant_report": "implementation_readiness_report.md"
+    },
+    {
+      "stage": 5,
+      "name": "consolidated",
+      "reviewers": [],
+      "elephant_report": "consolidated_review_report.md"
+    }
   ]
 }
