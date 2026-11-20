@@ -22,6 +22,8 @@ permission:
     "pwd *": allow
     "ls *": allow
     "cat /tmp/egm-herdr/*": allow
+    "cat /home/marco/projects/egm-herdr/*": allow
+    "cat /home/marco/tools/elephant-goldfish-model/*": allow
   task: deny
   skill:
     "*": deny
