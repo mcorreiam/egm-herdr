@@ -33,6 +33,8 @@ Never dispatch reviewers if preconditions fail. Never simulate a Goldfish review
 
 ## Dispatching a Goldfish reviewer (validated procedure)
 
+Path rule: prefer cwd-relative paths for project files (sources, components, docs); use absolute paths only for the adapter repo, the upstream bundle, the matrix report paths, and `/tmp` prompt/staging files. A permission prompt for a project file means the path is malformed — fix the path, never widen the rule.
+
 1. **Split a pane** (sibling, same cwd, no focus change). Check the calling pane width first (`herdr pane layout --pane "$HERDR_PANE_ID"`):
    - Split `right` ONLY if half the current width stays at ~80 columns or more.
    - Otherwise split `down` — never stack narrow side-by-side columns: a pane under ~80 columns wraps paths and report text (observed in calibration: the reviewer's path reply wrapped across 3 lines).

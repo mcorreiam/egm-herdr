@@ -104,6 +104,15 @@ else
   warn "opencode CLI not found — skipped resolved-config check"
 fi
 
+# 7. Permission semantics (ordering + SKILL coverage + no overbroad rules)
+if [ -f "$REPO_ROOT/scripts/check-permissions.py" ]; then
+  python3 "$REPO_ROOT/scripts/check-permissions.py" --repo-root "$REPO_ROOT" \
+    && ok "permission semantics: broad-first order, SKILL shell/external coverage" \
+    || fail "permission semantics violated — fix agents/*.md or SKILL.md (see output above)"
+else
+  warn "scripts/check-permissions.py missing — skipped permission-semantics check"
+fi
+
 echo
 if [ "$STATUS" = 0 ]; then
   echo "All offline checks passed."

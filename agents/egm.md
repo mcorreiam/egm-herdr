@@ -30,6 +30,7 @@ permission:
     "sort *": allow
     "uniq *": allow
     "sleep *": allow
+    "agy models *": allow
     "sed -n *": allow
     "git diff *": allow
     "git status *": allow
