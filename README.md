@@ -117,6 +117,7 @@ egm-herdr/
 ## Limitações conhecidas
 
 - Revisores ainda carregam `AGENTS.md` do projeto ao iniciar (leak documentado também nos harnesses oficiais do EGM).
+- No agy, o read-only passou de "prompt-only" para mitigado: o dispatch usa `--mode plan` (análise sem edição) e aceita `--model <id>` com effort embutido (ex.: `gemini-3.8-flash-high`). A confirmar no run de calibração.
 - `herdr agent prompt` pode reportar `agent_prompt_stalled` como falso negativo no `opencode mini` — o prompt foi entregue mesmo assim; confirme lendo o pane (a SKILL cobre isso).
 - Primeiro `agent start --kind agy` num workspace mostra um diálogo de confiança que só você responde.
 - `egm-reviewer` nega `grep` de propósito (grep não respeita as read rules de `.env` — mesma decisão do adapter oficial do EGM); personas que varrem código usam `read`+`glob`.

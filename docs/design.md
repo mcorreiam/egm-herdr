@@ -138,3 +138,23 @@ de escrita fora de `egm-reports/`.
   no prompt seguinte esperando a sumarização.
 - `opencode mini --model --agent`: única forma TUI interativa com seleção de
   modelo e agente por linha de comando (validada em D7).
+
+### Notas de versão do herdr (0.9.5) e do agy CLI (1.5.13)
+
+- **Integrações de estado do herdr**: os plugins
+  `~/.config/opencode/plugins/herdr-agent-state.js` (v13, opencode) e
+  `~/.gemini/config/hooks/herdr-agent-state.sh` (v4, antigravity-cli) é que
+  reportam `working/idle/blocked/done` — é por isso que o dispatch
+  `agent wait` funciona. O `herdr integration status` lista o que está
+  instalado; o adapter deve avisar se a integração do kind correspondente
+  não estiver `current`.
+- **agy `--model` e `--effort`**: os IDs de modelo do agy embutem o esforço
+  (`gemini-3.8-flash-low/medium/high`) — a matriz agora usa IDs reais.
+- **agy `--mode plan`**: modo de análise sem edição para os revisores
+  Goldfish no Antigravity — mitiga a limitação "agy é prompt-only".
+- **agy 1.5.13 — swarm não inicia sozinho** (um reviewer não explode quota),
+  **retries automáticos** em quedas de conexão (1.5.12) e
+  `--output-format json` reportando `SUCCESS` corretamente (candidato a
+  coleta estruturada no roadmap, via `agy --print`).
+- **agy 1.5.13 — multi-step paralelizado**: searches/reads/edits
+  independentes num passo só — revisores agy mais rápidos por turno.

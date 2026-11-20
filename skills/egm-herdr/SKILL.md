@@ -45,10 +45,13 @@ Never dispatch reviewers if preconditions fail. Never simulate a Goldfish review
    herdr agent start <reviewer-name> --kind opencode --pane <pane-id> \
      -- mini --model <model> --agent egm-reviewer
 
-   # kind: agy (Antigravity CLI; model is its configured default)
-   herdr agent start <reviewer-name> --kind agy --pane <pane-id>
+   # kind: agy (Antigravity CLI; plan mode keeps the reviewer analysis-only)
+   herdr agent start <reviewer-name> --kind agy --pane <pane-id> \
+     -- --model <model> --mode plan
    ```
    Use the reviewer name from the matrix as the agent name (e.g. `egm-zoom-out`).
+   - agy model IDs carry their effort tier (e.g. `gemini-3.8-flash-medium`,
+     `gemini-3.8-flash-high`) — check `agy models` when assigning.
    - First `agy` start in a workspace shows a trust dialog the USER must answer in that pane. Tell the user and wait.
    - If `agent start` returns `agent_not_ready`, wait until the agent is idle before prompting.
    - If `agent start` times out without registering the agent (detection failure), use the raw fallback in step 4b.

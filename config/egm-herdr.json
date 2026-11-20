@@ -22,13 +22,13 @@
     },
     "egm-structural": {
       "kind": "agy",
-      "model": "gemini-3.8-flash",
+      "model": "gemini-3.8-flash-medium",
       "persona_file": "structural.md",
       "report": "structural_report.md"
     },
     "egm-style": {
       "kind": "agy",
-      "model": "gemini-3.8-flash",
+      "model": "gemini-3.8-flash-medium",
       "persona_file": "style.md",
       "report": "style_report.md"
     },
@@ -85,25 +85,35 @@
     {
       "stage": 1,
       "name": "comprehension",
-      "reviewers": ["egm-comprehension"],
+      "reviewers": [
+        "egm-comprehension"
+      ],
       "elephant_report": "comprehension_report.md"
     },
     {
       "stage": 2,
       "name": "critic",
-      "reviewers": ["egm-design-critic", "egm-structural", "egm-style"],
+      "reviewers": [
+        "egm-design-critic",
+        "egm-structural",
+        "egm-style"
+      ],
       "elephant_report": "critic_report.md"
     },
     {
       "stage": 3,
       "name": "zoom-out",
-      "reviewers": ["egm-zoom-out"],
+      "reviewers": [
+        "egm-zoom-out"
+      ],
       "elephant_report": "zoom_out_report.md"
     },
     {
       "stage": 4,
       "name": "implementation-readiness",
-      "reviewers": ["egm-implementation-readiness"],
+      "reviewers": [
+        "egm-implementation-readiness"
+      ],
       "elephant_report": "implementation_readiness_report.md"
     },
     {
