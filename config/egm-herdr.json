@@ -1,0 +1,96 @@
+{
+  "$comment": "EGM-Herdr reviewer matrix. kind: opencode|agy. model: as accepted by the kind's CLI. persona_file: canonical file under upstream agents/. report: filename the reviewer writes inside egm-reports/. Fallbacks are opt-in, never silent.",
+  "schema_version": 1,
+  "artifact_dir": "egm-reports",
+  "upstream": {
+    "repo": "https://github.com/google/elephant-goldfish-model",
+    "persona_dir": "agents",
+    "standards_dir": "resources/document_standards"
+  },
+  "orchestrator": {
+    "name": "egm-elephant",
+    "kind": "opencode",
+    "model": "opencode-go/glm-5.3"
+  },
+  "reviewers": {
+    "egm-comprehension": {
+      "kind": "opencode",
+      "model": "opencode-go/muse-spark-1.3-contributor",
+      "persona_file": "comprehension.md",
+      "report": "comprehension_report.md"
+    },
+    "egm-design-critic": {
+      "kind": "opencode",
+      "model": "opencode-go/glm-5.3",
+      "persona_file": "design_critic.md",
+      "report": "critic_report.md"
+    },
+    "egm-structural": {
+      "kind": "agy",
+      "model": "gemini-3.8-flash",
+      "persona_file": "structural.md",
+      "report": "critic_report.md"
+    },
+    "egm-style": {
+      "kind": "agy",
+      "model": "gemini-3.8-flash",
+      "persona_file": "style.md",
+      "report": "critic_report.md"
+    },
+    "egm-zoom-out": {
+      "kind": "opencode",
+      "model": "opencode-go/glm-5.3",
+      "persona_file": "zoom_out.md",
+      "report": "zoom_out_report.md"
+    },
+    "egm-implementation-readiness": {
+      "kind": "opencode",
+      "model": "opencode-go/glm-5.3",
+      "persona_file": "implementation_readiness.md",
+      "report": "implementation_readiness_report.md"
+    },
+    "egm-codebase-details": {
+      "kind": "opencode",
+      "model": "opencode-go/muse-spark-1.3-contributor",
+      "persona_file": "codebase_details.md",
+      "report": "codebase_details_report.md"
+    },
+    "egm-inventive-catalyst": {
+      "kind": "opencode",
+      "model": "opencode-go/muse-spark-1.3-contributor",
+      "persona_file": "inventive_catalyst.md",
+      "report": "inventive_catalyst_report.md"
+    }
+  },
+  "implementer": {
+    "name": "egm-implementer",
+    "kind": "opencode",
+    "model": "opencode-go/glm-5.3"
+  },
+  "fallbacks": {
+    "rate_limited": {
+      "kind": "opencode",
+      "model": "opencode-go/mimo-v2.6-pro"
+    },
+    "calibration": {
+      "kind": "opencode",
+      "model": "opencode-go/beam-free"
+    }
+  },
+  "brainstorm_reviewers": [
+    "egm-codebase-details",
+    "egm-comprehension",
+    "egm-design-critic",
+    "egm-inventive-catalyst",
+    "egm-structural",
+    "egm-style",
+    "egm-implementation-readiness"
+  ],
+  "review_stages": [
+    { "stage": 1, "name": "comprehension", "reviewers": ["egm-comprehension"] },
+    { "stage": 2, "name": "critic", "reviewers": ["egm-design-critic", "egm-structural", "egm-style"] },
+    { "stage": 3, "name": "zoom-out", "reviewers": ["egm-zoom-out"] },
+    { "stage": 4, "name": "implementation-readiness", "reviewers": ["egm-implementation-readiness"] },
+    { "stage": 5, "name": "consolidated", "reviewers": [] }
+  ]
+}

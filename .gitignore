@@ -1,0 +1,3 @@
+# Local state
+*.bak.*
+installation.json

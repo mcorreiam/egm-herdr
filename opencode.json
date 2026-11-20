@@ -1,0 +1,87 @@
+{
+  "$comment": "egm-herdr adapter — placeholders __REPO_ROOT__ and __UPSTREAM_ROOT__ are replaced by scripts/install.sh when merging into ~/.config/opencode/opencode.json. Source of truth for model assignments is config/egm-herdr.json.",
+  "skills": {
+    "paths": ["__REPO_ROOT__/skills"]
+  },
+  "agent": {
+    "egm": {
+      "description": "EGM Elephant orchestrator: drafts specifications and dispatches Goldfish reviewers as Herdr panes",
+      "mode": "primary",
+      "color": "#1B6EF3",
+      "permission": {
+        "*": "ask",
+        "read": {
+          "*": "allow",
+          "*.env": "ask",
+          "*.env.*": "ask",
+          "*.env.example": "allow"
+        },
+        "glob": "allow",
+        "grep": "allow",
+        "skill": {
+          "*": "deny",
+          "egm-herdr": "allow"
+        },
+        "task": {
+          "*": "deny"
+        },
+        "external_directory": {
+          "*": "ask",
+          "__UPSTREAM_ROOT__/**": "allow",
+          "__REPO_ROOT__/**": "allow"
+        }
+      },
+      "prompt": "You are the ELEPHANT in the Elephant-Goldfish workflow running on the Herdr harness. Read and execute __REPO_ROOT__/skills/egm-herdr/SKILL.md. Canonical EGM resources (personas, document standards) live under __UPSTREAM_ROOT__; never substitute project files for bundled personas. Dispatch Goldfish reviewers as fresh Herdr panes via the herdr CLI — never review in your own context, never pass conversation history to reviewers, and never simulate a reviewer. Read __REPO_ROOT__/config/egm-herdr.json for the reviewer matrix (kind, model, persona_file). Resolve model fallbacks through the configured fallbacks. Preserve every human approval gate: stop and ask before proceeding at each EGM gate. Write canonical reports yourself after synthesizing reviewer findings."
+    },
+    "egm-reviewer": {
+      "description": "EGM Goldfish reviewer (read-only): reads the persona, target document, and standards supplied in its prompt; writes one report file and replies with its path",
+      "mode": "subagent",
+      "color": "#E86E00",
+      "permission": {
+        "*": "deny",
+        "read": {
+          "*": "allow",
+          "*.env": "deny",
+          "*.env.*": "deny",
+          "*.env.example": "allow",
+          "mcp:*": "deny"
+        },
+        "glob": "allow",
+        "grep": "deny",
+        "external_directory": {
+          "*": "deny",
+          "__UPSTREAM_ROOT__/**": "allow",
+          "__REPO_ROOT__/**": "allow"
+        }
+      },
+      "prompt": "You are an EGM GOLDFISH reviewer in a fresh, isolated context. Follow exactly the instructions in the prompt you were given: read the persona file, the target document, and the document standards it names (absolute paths). Do not retrieve unsolicited history, memory, or earlier reviewer findings; read prior reports only when your prompt explicitly supplies them. You are read-only for the repository: never edit, create, or delete project files. The only file you may write is the single report path given in your prompt. Report inaccessible required files as an incomplete review. When finished, reply with only the absolute path of the report you wrote."
+    }
+  },
+  "command": {
+    "egm-brainstorm": {
+      "description": "Explore an idea with fresh Herdr-pane reviewers and write concepts_brief.md",
+      "agent": "egm",
+      "template": "Read and execute __REPO_ROOT__/skills/egm-herdr/SKILL.md in BRAINSTORM mode. User request: $ARGUMENTS"
+    },
+    "egm-draft": {
+      "description": "Turn the brief into design_draft.md, pausing for feedback per section",
+      "agent": "egm",
+      "template": "Read and execute __REPO_ROOT__/skills/egm-herdr/SKILL.md in DRAFT mode. User request: $ARGUMENTS"
+    },
+    "egm-review": {
+      "description": "Review a draft across the canonical EGM stages using Herdr-pane Goldfish reviewers",
+      "agent": "egm",
+      "template": "Read and execute __REPO_ROOT__/skills/egm-herdr/SKILL.md in REVIEW mode. User request: $ARGUMENTS"
+    },
+    "egm-resolve": {
+      "description": "Work through review findings with the user and update the draft",
+      "agent": "egm",
+      "template": "Read and execute __REPO_ROOT__/skills/egm-herdr/SKILL.md in RESOLVE mode. User request: $ARGUMENTS"
+    },
+    "egm-drift-report": {
+      "description": "Compare checked-in documents with the current source code",
+      "agent": "egm",
+      "template": "Read and execute __REPO_ROOT__/skills/egm-herdr/SKILL.md in DRIFT-REPORT mode. User request: $ARGUMENTS"
+    }
+  }
+}
