@@ -21,6 +21,7 @@ permission:
     "echo *": allow
     "pwd *": allow
     "ls *": allow
+    "cat /tmp/egm-herdr/*": allow
   task: deny
   skill:
     "*": deny
