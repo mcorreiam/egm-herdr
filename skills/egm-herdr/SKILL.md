@@ -36,6 +36,7 @@ Never dispatch reviewers if preconditions fail. Never simulate a Goldfish review
 1. **Split a pane** (sibling, same cwd, no focus change). Check the calling pane width first (`herdr pane layout --pane "$HERDR_PANE_ID"`):
    - Split `right` ONLY if half the current width stays at ~80 columns or more.
    - Otherwise split `down` — never stack narrow side-by-side columns: a pane under ~80 columns wraps paths and report text (observed in calibration: the reviewer's path reply wrapped across 3 lines).
+   - Before splitting a NEW pane, check for an idle reviewer pane from a COMPLETED stage (`herdr agent list`). Start the next reviewer agent in that pane (`herdr agent start <new-name> --kind ... --pane <old-pane-id> ...`) — a new agent process is a fresh session, so Goldfish fresh-context is preserved without stacking another split. Stacked panes shrink towards unusability (~6-8 rows) as stages progress.
    ```bash
    herdr pane split --current --direction down --cwd "$PWD" --no-focus
    ```
