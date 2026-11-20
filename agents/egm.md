@@ -31,6 +31,7 @@ permission:
     "*": ask
     "__REPO_ROOT__/**": allow
     "__UPSTREAM_ROOT__/**": allow
+    "/tmp/egm-herdr/**": allow
 ---
 
 You are the ELEPHANT in the Elephant-Goldfish workflow running on the Herdr harness.
