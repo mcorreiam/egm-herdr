@@ -119,7 +119,22 @@ de escrita fora de `egm-reports/`.
 - v1.1 (feito): correções do primeiro par de reviews Goldfish — ver D7.
 - v1.2: `egm-drift-report` automatizado com `egm-codebase-details`; teste do
   marcador secreto automatizado com evidências gravadas.
+- v1.3: orçamento por run via `opencode api` (v2 API do server compartilhado)
+  e `opencode stats` — atendendo à sugestão P2 do review MiMo de estimar
+  custo (revisores × estágios × modelos) antes do dispatch.
 - v2: trocar o dispatch `herdr agent wait` pelo protocolo agent→agent do
   herdr-core (`hc run --bg` + report-back no input do Elephant) e submeter o
   harness "Herdr" ao `google/elephant-goldfish-model` com as evidências
   exigidas pelo `docs/harnesses.md` upstream.
+
+### Notas de versão da CLI que o adapter já aproveita (opencode 2.3.x)
+
+- `opencode reload`: aplica nova configuração no server compartilhado sem
+  fechar sessões (usado nos next steps do install).
+- v2.3.1 — shell command que estoura o timeout **vai pro background** em vez
+  de ser morto: os comandos herdr de longa duração do Elephant não morrem
+  no timeout default.
+- v2.3.1 — compaction em background: revisores com sessão longa não pausam
+  no prompt seguinte esperando a sumarização.
+- `opencode mini --model --agent`: única forma TUI interativa com seleção de
+  modelo e agente por linha de comando (validada em D7).

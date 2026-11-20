@@ -44,6 +44,8 @@ O `install.sh` instala do jeito que este build do opencode realmente carrega —
 - `~/.config/opencode/skills/egm-herdr` → symlink para este repo
 - `~/.config/egm-herdr/paths.json` + `installation.json` (commit + SHA-256 do upstream)
 
+Depois do install, um único `opencode reload` aplica agents/commands/skills no server compartilhado **sem fechar suas sessões abertas**.
+
 Backups `.bak.<timestamp>` são feitos se algum arquivo destino já existir. O upstream é validado por remote antes de qualquer update.
 
 ---

@@ -121,7 +121,9 @@ log "skill linked: $SKILL_LINK -> $REPO_ROOT/skills/egm-herdr"
 cat <<EOF
 
 Done. Next steps:
-  1. Restart opencode (agents, commands and skills load at startup).
+  1. Reload the running opencode server (no restart needed):
+       opencode reload
+     (or fully restart opencode if a client misbehaves)
   2. Verify: $REPO_ROOT/scripts/verify.sh
   3. Open a Herdr pane in your target project and run: /egm-review <draft>
      (or start the Elephant directly: opencode mini --model opencode-go/glm-5.3 --agent egm)
