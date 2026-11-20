@@ -30,6 +30,9 @@ permission:
     "sort *": allow
     "uniq *": allow
     "sleep *": allow
+    "git diff *": allow
+    "git status *": allow
+    "git log *": allow
     "cat /tmp/egm-herdr/*": allow
     "cat /home/marco/projects/egm-herdr/*": allow
     "cat /home/marco/tools/elephant-goldfish-model/*": allow
