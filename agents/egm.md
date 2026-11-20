@@ -29,6 +29,7 @@ permission:
     "stat *": allow
     "sort *": allow
     "uniq *": allow
+    "sleep *": allow
     "cat /tmp/egm-herdr/*": allow
     "cat /home/marco/projects/egm-herdr/*": allow
     "cat /home/marco/tools/elephant-goldfish-model/*": allow
