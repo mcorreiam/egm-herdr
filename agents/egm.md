@@ -44,6 +44,7 @@ permission:
     "__REPO_ROOT__/**": allow
     "__UPSTREAM_ROOT__/**": allow
     "/tmp/egm-herdr/**": allow
+    "/tmp/opencode/**": allow
     "~/.config/egm-herdr/**": allow
 ---
 
