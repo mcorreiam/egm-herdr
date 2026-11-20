@@ -19,6 +19,8 @@ permission:
     "test *": allow
     "mkdir *": allow
     "echo *": allow
+    "pwd *": allow
+    "ls *": allow
   task: deny
   skill:
     "*": deny
