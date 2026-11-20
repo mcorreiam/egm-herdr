@@ -33,11 +33,13 @@ Never dispatch reviewers if preconditions fail. Never simulate a Goldfish review
 
 ## Dispatching a Goldfish reviewer (validated procedure)
 
-1. **Split a pane** (sibling, same cwd, no focus change):
+1. **Split a pane** (sibling, same cwd, no focus change). Check the calling pane width first (`herdr pane layout --pane "$HERDR_PANE_ID"`):
+   - Split `right` ONLY if half the current width stays at ~80 columns or more.
+   - Otherwise split `down` — never stack narrow side-by-side columns: a pane under ~80 columns wraps paths and report text (observed in calibration: the reviewer's path reply wrapped across 3 lines).
    ```bash
-   herdr pane split --current --direction right --cwd "$PWD" --no-focus
+   herdr pane split --current --direction down --cwd "$PWD" --no-focus
    ```
-   Read the new pane ID from `.result.pane.pane_id`. Prefer `down` if the calling pane is narrow or tall; avoid repeated same-direction splits that create unusable columns.
+   Read the new pane ID from `.result.pane.pane_id`.
 
 2. **Start the reviewer agent** with its configured kind and model:
    ```bash
@@ -75,13 +77,11 @@ Never dispatch reviewers if preconditions fail. Never simulate a Goldfish review
    - Never resume or reuse a reviewer session for a new review; never dispatch reviewers in background.
 
 5. **Wait for completion (the trigger):**
+   For `kind: opencode` on the mini TUI, `herdr agent wait` can return early (the state plugin does not reliably track in-flight mini turns — observed in calibration). The primary mechanism is waiting for the reviewer's path reply, with soft wraps joined:
    ```bash
-   herdr agent wait <reviewer-name> --timeout 900000
+   herdr pane wait-output <reviewer-pane-id> --regex 'reviewers/[a-z_]+_report\.md *$' --timeout 900000
    ```
-   Runs after all prompts of the stage are sent; it returns on the settled `idle`, `done`, or `blocked` state. For raw-fallback reviewers, wait with:
-   ```bash
-   herdr pane wait-output <pane-id> --regex 'egm-reports/reviewers/[a-z_]+_report\.md *$' --timeout 900000
-   ```
+   Then confirm by READING the report file — its path is known a priori from the matrix, so never depend on the chat reply; a missing or empty report file means an incomplete review. Use `herdr agent wait <reviewer-name>` as a secondary signal only. The same wait-output applies to raw-fallback reviewers.
 
 6. **Collect the finding:** the source of truth is the report FILE. Read `<project>/egm-reports/reviewers/<report>` and treat a missing or empty file as an incomplete review. The reviewer's chat reply should contain only the path; use it just to confirm, never as the finding itself.
 
