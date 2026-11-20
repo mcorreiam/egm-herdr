@@ -23,6 +23,12 @@ permission:
     "ls *": allow
     "head *": allow
     "tail *": allow
+    "wc *": allow
+    "find *": allow
+    "grep *": allow
+    "stat *": allow
+    "sort *": allow
+    "uniq *": allow
     "cat /tmp/egm-herdr/*": allow
     "cat /home/marco/projects/egm-herdr/*": allow
     "cat /home/marco/tools/elephant-goldfish-model/*": allow
