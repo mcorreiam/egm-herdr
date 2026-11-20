@@ -16,6 +16,9 @@ permission:
   bash:
     "*": ask
     "herdr *": allow
+    "test *": allow
+    "mkdir *": allow
+    "echo *": allow
   task: deny
   skill:
     "*": deny
