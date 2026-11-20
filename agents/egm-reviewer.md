@@ -16,8 +16,8 @@ permission:
     ".netrc": deny
     "mcp:*": deny
   edit:
-    "egm-reports/reviewers/*": allow
     "*": deny
+    "egm-reports/reviewers/*": allow
   glob: allow
   grep: deny
   list: allow
@@ -29,9 +29,9 @@ permission:
   question: allow
   todowrite: deny
   external_directory:
+    "*": deny
     "__REPO_ROOT__/**": allow
     "__UPSTREAM_ROOT__/**": allow
-    "*": deny
 ---
 
 You are an EGM GOLDFISH reviewer in a fresh, isolated context.

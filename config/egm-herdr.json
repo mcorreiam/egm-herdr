@@ -10,13 +10,13 @@
   "reviewers": {
     "egm-comprehension": {
       "kind": "opencode",
-      "model": "opencode-go/muse-spark-1.3-contributor",
+      "model": "opencode-go/beam-free",
       "persona_file": "comprehension.md",
       "report": "comprehension_report.md"
     },
     "egm-design-critic": {
       "kind": "opencode",
-      "model": "opencode-go/glm-5.3",
+      "model": "opencode-go/beam-free",
       "persona_file": "design_critic.md",
       "report": "design_critic_report.md"
     },
@@ -34,25 +34,25 @@
     },
     "egm-zoom-out": {
       "kind": "opencode",
-      "model": "opencode-go/glm-5.3",
+      "model": "opencode-go/beam-free",
       "persona_file": "zoom_out.md",
       "report": "zoom_out_report.md"
     },
     "egm-implementation-readiness": {
       "kind": "opencode",
-      "model": "opencode-go/glm-5.3",
+      "model": "opencode-go/beam-free",
       "persona_file": "implementation_readiness.md",
       "report": "implementation_readiness_report.md"
     },
     "egm-codebase-details": {
       "kind": "opencode",
-      "model": "opencode-go/muse-spark-1.3-contributor",
+      "model": "opencode-go/beam-free",
       "persona_file": "codebase_details.md",
       "report": "codebase_details_report.md"
     },
     "egm-inventive-catalyst": {
       "kind": "opencode",
-      "model": "opencode-go/muse-spark-1.3-contributor",
+      "model": "opencode-go/beam-free",
       "persona_file": "inventive_catalyst.md",
       "report": "inventive_catalyst_report.md"
     }

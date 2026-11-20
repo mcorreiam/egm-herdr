@@ -14,18 +14,18 @@ permission:
   grep: allow
   list: allow
   bash:
-    "herdr *": allow
     "*": ask
+    "herdr *": allow
   task: deny
   skill:
-    "egm-herdr": allow
     "*": deny
+    "egm-herdr": allow
   question: allow
   websearch: allow
   external_directory:
+    "*": ask
     "__REPO_ROOT__/**": allow
     "__UPSTREAM_ROOT__/**": allow
-    "*": ask
 ---
 
 You are the ELEPHANT in the Elephant-Goldfish workflow running on the Herdr harness.
