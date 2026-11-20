@@ -21,6 +21,8 @@ permission:
     "echo *": allow
     "pwd *": allow
     "ls *": allow
+    "head *": allow
+    "tail *": allow
     "cat /tmp/egm-herdr/*": allow
     "cat /home/marco/projects/egm-herdr/*": allow
     "cat /home/marco/tools/elephant-goldfish-model/*": allow
