@@ -30,6 +30,7 @@ permission:
     "sort *": allow
     "uniq *": allow
     "sleep *": allow
+    "sed -n *": allow
     "git diff *": allow
     "git status *": allow
     "git log *": allow
